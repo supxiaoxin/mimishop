@@ -123,7 +123,19 @@
 								<input type="reset" value="取消" class="btn btn-default" onclick="myclose(${param.page})">
 								<script type="text/javascript">
 									function myclose(ispage) {
+
 										window.location="${pageContext.request.contextPath}/prod/split.action?page="+ispage;
+
+										$.ajax({
+											url: "${pageContext.request.contextPath}/prod/reset.action",
+											dataType: "text",
+											success:function (msg) {
+												if(msg!=""){
+													alert(msg);
+												}
+											}
+
+										})
 									}
 								</script>
 							</td>

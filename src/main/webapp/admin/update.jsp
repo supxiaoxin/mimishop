@@ -50,8 +50,19 @@
 			</script>
 <script type="text/javascript">
 	function myclose() {
+
 		window.location="${pageContext.request.contextPath}/admin/product.jsp"
 		//window.close();
+		$.ajax({
+			url: "${pageContext.request.contextPath}/prod/reset.action",
+			dataType: "text",
+			success:function (msg) {
+				if(msg!=""){
+					alert(msg);
+				}
+			}
+
+		})
 	}
 </script>
 			<div id="table">

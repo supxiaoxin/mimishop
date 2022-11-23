@@ -8,5 +8,6 @@ public class MyTest {
     public void md5Test(){
         String m= MD5Util.getMD5("729351");
         System.out.println(m);
+        System.out.println(10%3*2);
     }
 }

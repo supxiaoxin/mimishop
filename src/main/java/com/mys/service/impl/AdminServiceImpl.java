@@ -47,6 +47,29 @@ public class AdminServiceImpl implements AdminService {
         return null;
     }
 
+    @Override
+    public String regist(Admin admin) {
+        AdminExample example = new AdminExample();
+        /**如何添加条件
+         * select * from admin where a_name ='admin'
+         */
+        //添加用户名a_name条件
+        example.createCriteria().andANameEqualTo(admin.getaName());
+
+        List<Admin> list = adminMapper.selectByExample(example);
+        if(list.size() > 0 ){
+            System.out.println("用户已经注册！");
+            return "用户已经注册！";
+        }
+        admin.setaPass(MD5Util.getMD5(admin.getaPass()));
+        int count= adminMapper.insert(admin);
+        if(count==1){
+            System.out.println("注册成功！");
+            return "注册成功！";
+        }
+        System.out.println("注册失败！");
+        return "注册失败！";
+    }
 
 
 }

@@ -77,14 +77,18 @@ public class ProductInfoAction {
     //异步ajax文件上传处理
     @ResponseBody
     @RequestMapping("/ajaxImg")
-    public Object ajaxImg(MultipartFile pimage, HttpServletRequest request) {
+    public Object ajaxImg(MultipartFile pimage, HttpServletRequest request,HttpSession session) {
         //提取生成文件名UUID+上传图片的后缀.jpg  .png
         saveFileName = FileNameUtil.getUUIDFileName() + FileNameUtil.getFileType(pimage.getOriginalFilename());
         //得到项目中图片存储的路径
         String path = request.getServletContext().getRealPath("/image_big");
         //转存  E:\idea_workspace\mimishop\image_big\23sdfasferafdafdadfasfdassf.jpg
         try {
-            pimage.transferTo(new File(path + File.separator + saveFileName));
+            String fileAbstractPath=path + File.separator/*这个是反斜杠分隔符*/ + saveFileName;
+            System.out.println(fileAbstractPath);
+            pimage.transferTo(new File(fileAbstractPath));
+            session.setAttribute("imgFlag", true);
+            session.setAttribute("imgPath", fileAbstractPath);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -94,7 +98,7 @@ public class ProductInfoAction {
         return object.toString();
     }
     @RequestMapping("/save")
-    public String save(ProductInfo info, HttpServletRequest request) {
+    public String save(ProductInfo info, HttpServletRequest request,HttpSession session) {
         info.setpImage(saveFileName);
         info.setpDate(new Date());
         //info对象中有表单提交上来的5个数据,有异步ajax上来的图片名称数据,有上架时间的数据
@@ -112,6 +116,7 @@ public class ProductInfoAction {
         }
         //清空saveFileName变量中的内容,为了下次增加或修改的异步ajax的上传处理
         saveFileName = "";
+        session.setAttribute("imgFlag", false);
         //增加成功后应该重新访问数据库,所以跳转到分页显示的action上
         return "forward:/prod/split.action";
     }
@@ -211,5 +216,17 @@ public class ProductInfoAction {
             request.setAttribute("msg","商品不可删除!");
         }
         return "forward:/prod/deleteAjaxSplit.action";
+    }
+
+    @RequestMapping(value = "/reset",produces = "text/plain;charset=utf-8")
+    @ResponseBody()
+    public String resetImg(HttpSession session){
+        if((boolean)session.getAttribute("imgFlag")){
+            File imgFile=new File(session.getAttribute("imgPath").toString());
+            imgFile.delete();
+            System.out.println("删除图片成功--"+session.getAttribute("imgPath").toString());
+            return "已取消！";
+        }
+        return "";
     }
 }

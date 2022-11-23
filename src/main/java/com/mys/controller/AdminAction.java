@@ -34,4 +34,17 @@ public class AdminAction {
 
     }
 
+    //实现注册功能
+    @RequestMapping("/regist")
+    public String registAdmin(HttpServletRequest request){
+        Admin admin=new Admin();
+        admin.setaName((String) request.getParameter("name"));
+        admin.setaPass((String) request.getParameter("password"));
+        System.out.println(admin);
+        request.setAttribute("errmsg", adminService.regist(admin));
+        if(request.getAttribute("errmsg")=="注册成功！"){
+            return "login";
+        }
+        return "regist";
+    }
 }

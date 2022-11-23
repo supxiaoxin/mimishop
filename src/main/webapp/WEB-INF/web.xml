@@ -51,6 +51,7 @@ private boolean forceResponseEncoding;-->
         <param-name>contextConfigLocation</param-name>
         <param-value>classpath:applicationContext_*</param-value>
     </context-param>
+
     <welcome-file-list>
         <welcome-file>/admin/login.jsp</welcome-file>
     </welcome-file-list>
